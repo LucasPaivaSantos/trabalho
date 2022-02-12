@@ -1,6 +1,7 @@
 #include <stdio.h>
 #define LINHAS 8
 #define COLUNAS 24
+#define NTREINADORES 4
 
 typedef struct
 {
@@ -17,9 +18,18 @@ typedef struct
     int x;
     int y;
     int insignias;
+    int numAlgomons;
     Algomon algodex[15];
 
 } Jogador;
+
+typedef struct
+{
+    char simbolo;
+    int x;
+    int y;
+    Algomon superAlgomon;
+} Treinador;
 
 typedef struct
 {
@@ -30,14 +40,6 @@ typedef struct
     Treinador treinador;
 
 } Cidade;
-
-typedef struct
-{
-    char simbolo;
-    int x;
-    int y;
-    Algomon superAlgomon;
-} Treinador;
 
 Algomon criaAlgomon(char nome[], int atk, int vida, char tipo)
 {
@@ -78,6 +80,57 @@ Treinador criaTreinador(char simbolo, Algomon algomon)
     treinador.superAlgomon.vida = treinador.superAlgomon.vida + 20;
 }
 
+int possuiTodasAsInsignas(Jogador jogador)
+{
+    if (jogador.insignias == NTREINADORES)
+    {
+        return 1;
+    }
+    else
+    {
+        return 0;
+    }
+}
+
+int todosAlgomonsMortos(Jogador jogador)
+{
+    int i = 0;
+    int contVivos = 0;
+    for (i = 0; i < jogador.numAlgomons; i++)
+    {
+        if (jogador.algodex[i].vida > 0)
+        {
+            contVivos++;
+        }
+    }
+    if (contVivos == 0)
+    {
+        return 1;
+    }
+
+    return 0;
+}
+
+void exibeMapa(char mapa[LINHAS][COLUNAS], Jogador jogador)
+{
+    int y, x = 0;
+    for (y = 0; y < LINHAS; y++)
+    {
+        for (x = 0; mapa[y][x] != '\0'; x++)
+        {
+            if (jogador.y == y && jogador.x == x)
+            {
+                printf("%c", jogador.simbolo);
+            }
+            else
+            {
+                printf("%c", mapa[y][x]);
+            }
+        }
+        printf("\n");
+    }
+}
+
 int main()
 {
 
@@ -101,7 +154,7 @@ int main()
     algumonsDisponiveis[16] = criaAlgomon("n", 6, 26, 'R');
     algumonsDisponiveis[17] = criaAlgomon("Ceepluplus", 8, 50, 'L');
 
-    Treinador treinadoresExistentes[4];
+    Treinador treinadoresExistentes[NTREINADORES];
     treinadoresExistentes[0] = criaTreinador('Z', algumonsDisponiveis[17]);
     treinadoresExistentes[1] = criaTreinador('X', algumonsDisponiveis[16]);
     treinadoresExistentes[2] = criaTreinador('Y', algumonsDisponiveis[15]);
@@ -129,11 +182,12 @@ int main()
     jogador1.simbolo = 'A';
     jogador1.x = 6;
     jogador1.y = 3;
+    jogador1.numAlgomons = 3;
     jogador1.algodex[0] = algumonsDisponiveis[0];
     jogador1.algodex[1] = algumonsDisponiveis[1];
     jogador1.algodex[2] = algumonsDisponiveis[2];
 
-    char mtzMapa[LINHAS][COLUNAS] = {
+    char mapa[LINHAS][COLUNAS] = {
         {"Z     #                "},
         {"|     |     #-----#    "},
         {"|     |     |     |    "},
@@ -142,6 +196,11 @@ int main()
         {"      |   #-----------#"},
         {"      |   |            "},
         {"Y-----#---#-----#-----R"}};
+
+    while (!todosAlgomonsMortos(jogador1) && !possuiTodasAsInsignas(jogador1))
+    {
+        exibeMapa(mapa, jogador1);
+    }
 
     return 0;
 }
