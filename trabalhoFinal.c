@@ -27,6 +27,7 @@ typedef struct
     int x;
     int y;
     Algomon algomon;
+    Treinador treinador;
 
 } Cidade;
 
@@ -53,21 +54,26 @@ Algomon criaAlgomon(char nome[], int atk, int vida, char tipo)
     return algomon;
 }
 
-Cidade criaCidade(char simbolo, int x, int y, Algomon algomon)
+Cidade criaCidade(int x, int y, Algomon algomon)
 {
     Cidade cidade;
-    cidade.simbolo = simbolo;
+    cidade.simbolo = '#';
     cidade.x = x;
     cidade.y = y;
     cidade.algomon = algomon;
 }
 
-Treinador criaTreinador(char simbolo, int x, int y, Algomon algomon)
+Cidade criaCidadeComTreinador(int x, int y, Algomon algomon, Treinador treinador)
+{
+    Cidade cidade = criaCidade(x, y, algomon);
+    cidade.treinador = treinador;
+    return cidade;
+}
+
+Treinador criaTreinador(char simbolo, Algomon algomon)
 {
     Treinador treinador;
     treinador.simbolo = simbolo;
-    treinador.x = x;
-    treinador.y = y;
     treinador.superAlgomon = algomon;
     treinador.superAlgomon.vida = treinador.superAlgomon.vida + 20;
 }
@@ -95,25 +101,29 @@ int main()
     algumonsDisponiveis[16] = criaAlgomon("n", 6, 26, 'R');
     algumonsDisponiveis[17] = criaAlgomon("Ceepluplus", 8, 50, 'L');
 
-    Cidade cidadesExistentes[12];
-    cidadesExistentes[0] = criaCidade('#', 6, 0, algumonsDisponiveis[3]);
-    cidadesExistentes[1] = criaCidade('#', 12, 1, algumonsDisponiveis[4]);
-    cidadesExistentes[2] = criaCidade('#', 18, 1, algumonsDisponiveis[5]);
-    cidadesExistentes[3] = criaCidade('#', 0, 3, algumonsDisponiveis[6]);
-    cidadesExistentes[4] = criaCidade('#', 6, 3, algumonsDisponiveis[7]);
-    cidadesExistentes[5] = criaCidade('#', 12, 3, algumonsDisponiveis[8]);
-    cidadesExistentes[6] = criaCidade('#', 18, 3, algumonsDisponiveis[9]);
-    cidadesExistentes[7] = criaCidade('#', 10, 5, algumonsDisponiveis[10]);
-    cidadesExistentes[8] = criaCidade('#', 22, 5, algumonsDisponiveis[11]);
-    cidadesExistentes[9] = criaCidade('#', 6, 7, algumonsDisponiveis[12]);
-    cidadesExistentes[10] = criaCidade('#', 10, 7, algumonsDisponiveis[13]);
-    cidadesExistentes[11] = criaCidade('#', 16, 7, algumonsDisponiveis[14]);
-
     Treinador treinadoresExistentes[4];
-    treinadoresExistentes[0] = criaTreinador('Z', 0, 0, algumonsDisponiveis[17]);
-    treinadoresExistentes[1] = criaTreinador('X', 22, 3, algumonsDisponiveis[16]);
-    treinadoresExistentes[2] = criaTreinador('Y', 0, 7, algumonsDisponiveis[15]);
-    treinadoresExistentes[3] = criaTreinador('R', 22, 7, algumonsDisponiveis[14]);
+    treinadoresExistentes[0] = criaTreinador('Z', algumonsDisponiveis[17]);
+    treinadoresExistentes[1] = criaTreinador('X', algumonsDisponiveis[16]);
+    treinadoresExistentes[2] = criaTreinador('Y', algumonsDisponiveis[15]);
+    treinadoresExistentes[3] = criaTreinador('R', algumonsDisponiveis[14]);
+
+    Cidade cidadesExistentes[16];
+    cidadesExistentes[0] = criaCidade(6, 0, algumonsDisponiveis[3]);
+    cidadesExistentes[1] = criaCidade(12, 1, algumonsDisponiveis[4]);
+    cidadesExistentes[2] = criaCidade(18, 1, algumonsDisponiveis[5]);
+    cidadesExistentes[3] = criaCidade(0, 3, algumonsDisponiveis[6]);
+    cidadesExistentes[4] = criaCidade(6, 3, algumonsDisponiveis[7]);
+    cidadesExistentes[5] = criaCidade(12, 3, algumonsDisponiveis[8]);
+    cidadesExistentes[6] = criaCidade(18, 3, algumonsDisponiveis[9]);
+    cidadesExistentes[7] = criaCidade(10, 5, algumonsDisponiveis[10]);
+    cidadesExistentes[8] = criaCidade(22, 5, algumonsDisponiveis[11]);
+    cidadesExistentes[9] = criaCidade(6, 7, algumonsDisponiveis[12]);
+    cidadesExistentes[10] = criaCidade(10, 7, algumonsDisponiveis[13]);
+    cidadesExistentes[11] = criaCidade(16, 7, algumonsDisponiveis[14]);
+    cidadesExistentes[12] = criaCidadeComTreinador(0, 0, algumonsDisponiveis[17], treinadoresExistentes[0]);
+    cidadesExistentes[13] = criaCidadeComTreinador(22, 3, algumonsDisponiveis[16], treinadoresExistentes[1]);
+    cidadesExistentes[14] = criaCidadeComTreinador(0, 7, algumonsDisponiveis[15], treinadoresExistentes[2]);
+    cidadesExistentes[15] = criaCidadeComTreinador(22, 7, algumonsDisponiveis[14], treinadoresExistentes[3]);
 
     Jogador jogador1;
     jogador1.simbolo = 'A';
@@ -122,6 +132,16 @@ int main()
     jogador1.algodex[0] = algumonsDisponiveis[0];
     jogador1.algodex[1] = algumonsDisponiveis[1];
     jogador1.algodex[2] = algumonsDisponiveis[2];
+
+    char mtzMapa[LINHAS][COLUNAS] = {
+        {"Z     #                "},
+        {"|     |     #-----#    "},
+        {"|     |     |     |    "},
+        {"#-----+-----#-----#---X"},
+        {"      |               |"},
+        {"      |   #-----------#"},
+        {"      |   |            "},
+        {"Y-----#---#-----#-----R"}};
 
     return 0;
 }
