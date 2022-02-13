@@ -1,7 +1,7 @@
 #include <stdio.h>
 #define LINHAS 8
 #define COLUNAS 24
-#define NTREINADORES 4
+#define NUMTREINADORES 4
 
 typedef struct
 {
@@ -82,7 +82,7 @@ Treinador criaTreinador(char simbolo, Algomon algomon)
 
 int possuiTodasAsInsignas(Jogador jogador)
 {
-    if (jogador.insignias == NTREINADORES)
+    if (jogador.insignias == NUMTREINADORES)
     {
         return 1;
     }
@@ -131,6 +131,178 @@ void exibeMapa(char mapa[LINHAS][COLUNAS], Jogador jogador)
     }
 }
 
+/*int podeMoverPara(char mapa[LINHAS][COLUNAS], int y, int x)
+{
+    char permitidos[4 + 1] = "|-+#";
+    int i;
+    for (i = 0; permitidos[i] != '\0'; i++)
+    {
+        if (mapa[y][x] == permitidos[i])
+        {
+            return 1;
+        }
+    }
+    return 0;
+}*/
+
+Jogador moverParaONorte(char mapa[LINHAS][COLUNAS], Jogador jogador)
+{
+    int y = jogador.y - 1;
+    int x = jogador.x;
+    while (y >= 0 && mapa[y][x] != ' ')
+    {
+        if (mapa[y][x] == '|')
+        {
+            y--;
+        }
+        else if (mapa[y][x] == '#')
+        {
+            // TODO pegar pokemon
+            jogador.y = y;
+            break;
+        }
+        else if (mapa[y][x] == '+')
+        {
+            jogador.y = y;
+            break;
+        }
+        else
+        {
+            // TODO batalhar e pegar pokemon
+            jogador.y = y;
+            break;
+        }
+    }
+    return jogador;
+}
+
+Jogador moverParaOSul(char mapa[LINHAS][COLUNAS], Jogador jogador)
+{
+    int y = jogador.y + 1;
+    int x = jogador.x;
+    while (y <= 8 && mapa[y][x] != ' ')
+    {
+        if (mapa[y][x] == '|')
+        {
+            y++;
+        }
+        else if (mapa[y][x] == '#')
+        {
+            // TODO pegar pokemon
+            jogador.y = y;
+            break;
+        }
+        else if (mapa[y][x] == '+')
+        {
+            jogador.y = y;
+            break;
+        }
+        else
+        {
+            // TODO batalhar e pegar pokemon
+            jogador.y = y;
+            break;
+        }
+    }
+    return jogador;
+}
+
+Jogador moverParaOOeste(char mapa[LINHAS][COLUNAS], Jogador jogador)
+{
+    int y = jogador.y;
+    int x = jogador.x - 1;
+    while (x >= 0 && mapa[y][x] != ' ')
+    {
+        if (mapa[y][x] == '-')
+        {
+            x--;
+        }
+        else if (mapa[y][x] == '#')
+        {
+            // TODO pegar pokemon
+            jogador.x = x;
+            break;
+        }
+        else if (mapa[y][x] == '+')
+        {
+            jogador.x = x;
+            break;
+        }
+        else
+        {
+            // TODO batalhar e pegar pokemon
+            jogador.x = x;
+            break;
+        }
+    }
+    return jogador;
+}
+
+Jogador moverParaOLeste(char mapa[LINHAS][COLUNAS], Jogador jogador)
+{
+    int y = jogador.y;
+    int x = jogador.x + 1;
+    while (x != '\0' && mapa[y][x] != ' ')
+    {
+        if (mapa[y][x] == '-')
+        {
+            x++;
+        }
+        else if (mapa[y][x] == '#')
+        {
+            // TODO pegar pokemon
+            jogador.x = x;
+            break;
+        }
+        else if (mapa[y][x] == '+')
+        {
+            jogador.x = x;
+            break;
+        }
+        else
+        {
+            // TODO batalhar e pegar pokemon
+            jogador.x = x;
+            break;
+        }
+    }
+    return jogador;
+}
+
+Jogador leAcao(char mapa[LINHAS][COLUNAS], Jogador jogador)
+{
+    int y, x = 0;
+
+    char direcao;
+    printf("Qual seu movimento (wasdrf)?");
+    scanf("%c", &direcao);
+    {
+        switch (direcao)
+        {
+        case 'w':
+            jogador = moverParaONorte(mapa, jogador);
+
+            break;
+        case 's':
+            jogador = moverParaOSul(mapa, jogador);
+
+            break;
+        case 'a':
+            jogador = moverParaOOeste(mapa, jogador);
+
+            break;
+        case 'd':
+            jogador = moverParaOLeste(mapa, jogador);
+
+            break;
+        default:
+            break;
+        }
+    };
+    scanf("%*c");
+    return jogador;
+}
+
 int main()
 {
 
@@ -154,7 +326,7 @@ int main()
     algumonsDisponiveis[16] = criaAlgomon("n", 6, 26, 'R');
     algumonsDisponiveis[17] = criaAlgomon("Ceepluplus", 8, 50, 'L');
 
-    Treinador treinadoresExistentes[NTREINADORES];
+    Treinador treinadoresExistentes[NUMTREINADORES];
     treinadoresExistentes[0] = criaTreinador('Z', algumonsDisponiveis[17]);
     treinadoresExistentes[1] = criaTreinador('X', algumonsDisponiveis[16]);
     treinadoresExistentes[2] = criaTreinador('Y', algumonsDisponiveis[15]);
@@ -199,7 +371,9 @@ int main()
 
     while (!todosAlgomonsMortos(jogador1) && !possuiTodasAsInsignas(jogador1))
     {
+        printf("\n");
         exibeMapa(mapa, jogador1);
+        jogador1 = leAcao(mapa, jogador1);
     }
 
     return 0;
