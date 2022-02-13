@@ -1,7 +1,10 @@
 #include <stdio.h>
+#include <string.h>
 #define LINHAS 8
 #define COLUNAS 24
 #define NUMTREINADORES 4
+#define NUMCIDADES 16
+#define TAMALGODEX 15
 
 typedef struct
 {
@@ -19,7 +22,7 @@ typedef struct
     int y;
     int insignias;
     int numAlgomons;
-    Algomon algodex[15];
+    Algomon algodex[TAMALGODEX];
 
 } Jogador;
 
@@ -78,6 +81,16 @@ Treinador criaTreinador(char simbolo, Algomon algomon)
     treinador.simbolo = simbolo;
     treinador.superAlgomon = algomon;
     treinador.superAlgomon.vida = treinador.superAlgomon.vida + 20;
+}
+
+Jogador capturaAlgomon(Jogador jogador, Cidade cidade)
+{
+    if (jogador.numAlgomons < TAMALGODEX)
+    {
+        jogador.algodex[jogador.numAlgomons] = cidade.algomon;
+        jogador.numAlgomons++;
+    }
+    return jogador;
 }
 
 int possuiTodasAsInsignas(Jogador jogador)
@@ -145,10 +158,23 @@ void exibeMapa(char mapa[LINHAS][COLUNAS], Jogador jogador)
     return 0;
 }*/
 
-Jogador moverParaONorte(char mapa[LINHAS][COLUNAS], Jogador jogador)
+Cidade localizaCidade(Cidade cidadesExistentes[], int x, int y)
+{
+    int i = 0;
+    for (i = 0; i < NUMCIDADES; i++)
+    {
+        if (cidadesExistentes[i].x == x && cidadesExistentes[i].y == y)
+        {
+            return cidadesExistentes[i];
+        }
+    }
+}
+
+Jogador moverParaONorte(char mapa[LINHAS][COLUNAS], Cidade cidadesExistentes[], Jogador jogador)
 {
     int y = jogador.y - 1;
     int x = jogador.x;
+    Cidade cidade = localizaCidade(cidadesExistentes, x, y);
     while (y >= 0 && mapa[y][x] != ' ')
     {
         if (mapa[y][x] == '|')
@@ -157,8 +183,8 @@ Jogador moverParaONorte(char mapa[LINHAS][COLUNAS], Jogador jogador)
         }
         else if (mapa[y][x] == '#')
         {
-            // TODO pegar pokemon
             jogador.y = y;
+            jogador = capturaAlgomon(jogador, cidade);
             break;
         }
         else if (mapa[y][x] == '+')
@@ -176,10 +202,11 @@ Jogador moverParaONorte(char mapa[LINHAS][COLUNAS], Jogador jogador)
     return jogador;
 }
 
-Jogador moverParaOSul(char mapa[LINHAS][COLUNAS], Jogador jogador)
+Jogador moverParaOSul(char mapa[LINHAS][COLUNAS], Cidade cidadesExistentes[], Jogador jogador)
 {
     int y = jogador.y + 1;
     int x = jogador.x;
+    Cidade cidade = localizaCidade(cidadesExistentes, x, y);
     while (y < 8 && mapa[y][x] != ' ')
     {
         if (mapa[y][x] == '|')
@@ -188,8 +215,8 @@ Jogador moverParaOSul(char mapa[LINHAS][COLUNAS], Jogador jogador)
         }
         else if (mapa[y][x] == '#')
         {
-            // TODO pegar pokemon
             jogador.y = y;
+            jogador = capturaAlgomon(jogador, cidade);
             break;
         }
         else if (mapa[y][x] == '+')
@@ -207,10 +234,11 @@ Jogador moverParaOSul(char mapa[LINHAS][COLUNAS], Jogador jogador)
     return jogador;
 }
 
-Jogador moverParaOOeste(char mapa[LINHAS][COLUNAS], Jogador jogador)
+Jogador moverParaOOeste(char mapa[LINHAS][COLUNAS], Cidade cidadesExistentes[], Jogador jogador)
 {
     int y = jogador.y;
     int x = jogador.x - 1;
+    Cidade cidade = localizaCidade(cidadesExistentes, x, y);
     while (x >= 0 && mapa[y][x] != ' ')
     {
         if (mapa[y][x] == '-')
@@ -219,8 +247,8 @@ Jogador moverParaOOeste(char mapa[LINHAS][COLUNAS], Jogador jogador)
         }
         else if (mapa[y][x] == '#')
         {
-            // TODO pegar pokemon
             jogador.x = x;
+            jogador = capturaAlgomon(jogador, cidade);
             break;
         }
         else if (mapa[y][x] == '+')
@@ -238,10 +266,11 @@ Jogador moverParaOOeste(char mapa[LINHAS][COLUNAS], Jogador jogador)
     return jogador;
 }
 
-Jogador moverParaOLeste(char mapa[LINHAS][COLUNAS], Jogador jogador)
+Jogador moverParaOLeste(char mapa[LINHAS][COLUNAS], Cidade cidadesExistentes[], Jogador jogador)
 {
     int y = jogador.y;
     int x = jogador.x + 1;
+    Cidade cidade = localizaCidade(cidadesExistentes, x, y);
     while (x < 23 && mapa[y][x] != ' ')
     {
         if (mapa[y][x] == '-')
@@ -250,8 +279,8 @@ Jogador moverParaOLeste(char mapa[LINHAS][COLUNAS], Jogador jogador)
         }
         else if (mapa[y][x] == '#')
         {
-            // TODO pegar pokemon
             jogador.x = x;
+            jogador = capturaAlgomon(jogador, cidade);
             break;
         }
         else if (mapa[y][x] == '+')
@@ -269,7 +298,7 @@ Jogador moverParaOLeste(char mapa[LINHAS][COLUNAS], Jogador jogador)
     return jogador;
 }
 
-Jogador leAcao(char mapa[LINHAS][COLUNAS], Jogador jogador)
+Jogador leAcao(char mapa[LINHAS][COLUNAS], Cidade cidadesExistentes[], Jogador jogador)
 {
     int y, x = 0;
 
@@ -280,19 +309,19 @@ Jogador leAcao(char mapa[LINHAS][COLUNAS], Jogador jogador)
         switch (direcao)
         {
         case 'w':
-            jogador = moverParaONorte(mapa, jogador);
+            jogador = moverParaONorte(mapa, cidadesExistentes, jogador);
 
             break;
         case 's':
-            jogador = moverParaOSul(mapa, jogador);
+            jogador = moverParaOSul(mapa, cidadesExistentes, jogador);
 
             break;
         case 'a':
-            jogador = moverParaOOeste(mapa, jogador);
+            jogador = moverParaOOeste(mapa, cidadesExistentes, jogador);
 
             break;
         case 'd':
-            jogador = moverParaOLeste(mapa, jogador);
+            jogador = moverParaOLeste(mapa, cidadesExistentes, jogador);
 
             break;
         default:
@@ -303,6 +332,28 @@ Jogador leAcao(char mapa[LINHAS][COLUNAS], Jogador jogador)
     return jogador;
 }
 
+/*Jogador rolaAlgodexParaCima(Jogador jogador)
+{
+    int i, idxFinal = 0;
+    Algomon algomonAux;
+    idxFinal = strlen(jogador.algodex);
+    for (i = 0; i < idxFinal; i++)
+    {
+        jogador.algodex[i] = algomonAux;
+        jogador.algodex[i] = jogador.algodex[i + 1];
+        jogador.algodex[idxFinal] = algomonAux;
+    }
+    return jogador;
+}*/
+
+/*void exibeMenu(Jogador jogador)
+{
+    printf("Algodex (%d/15) Algomons: %d Insignias: %d \n", jogador.numAlgomons, jogador.numAlgomons, jogador.insignias);
+    printf("%s                Atk: %d HP: %d Type: %c\n", jogador.algodex[0].nome, jogador.algodex[0].atk, jogador.algodex[0].vida, jogador.algodex[0].tipo);
+    printf("%s                Atk: %d HP: %d Type: %c\n", jogador.algodex[1].nome, jogador.algodex[1].atk, jogador.algodex[1].vida, jogador.algodex[1].tipo);
+    printf("%s                Atk: %d HP: %d Type: %c\n", jogador.algodex[2].nome, jogador.algodex[2].atk, jogador.algodex[2].vida, jogador.algodex[2].tipo);
+}*/
+
 int main()
 {
 
@@ -310,9 +361,9 @@ int main()
     algumonsDisponiveis[0] = criaAlgomon("Ifssauro", 5, 20, 'C');
     algumonsDisponiveis[1] = criaAlgomon("Whiledle", 3, 40, 'R');
     algumonsDisponiveis[2] = criaAlgomon("Vectoray", 4, 30, 'D');
-    algumonsDisponiveis[3] = criaAlgomon("a", 5, 18, 'C');
-    algumonsDisponiveis[4] = criaAlgomon("b", 3, 36, 'R');
-    algumonsDisponiveis[5] = criaAlgomon("c", 2, 50, 'D');
+    algumonsDisponiveis[3] = criaAlgomon("Stringle", 5, 18, 'C');
+    algumonsDisponiveis[4] = criaAlgomon("Structurer", 3, 36, 'R');
+    algumonsDisponiveis[5] = criaAlgomon("Arrayzard", 2, 50, 'D');
     algumonsDisponiveis[6] = criaAlgomon("d", 5, 22, 'C');
     algumonsDisponiveis[7] = criaAlgomon("e", 3, 40, 'R');
     algumonsDisponiveis[8] = criaAlgomon("f", 4, 32, 'D');
@@ -332,7 +383,7 @@ int main()
     treinadoresExistentes[2] = criaTreinador('Y', algumonsDisponiveis[15]);
     treinadoresExistentes[3] = criaTreinador('R', algumonsDisponiveis[14]);
 
-    Cidade cidadesExistentes[16];
+    Cidade cidadesExistentes[NUMCIDADES];
     cidadesExistentes[0] = criaCidade(6, 0, algumonsDisponiveis[3]);
     cidadesExistentes[1] = criaCidade(12, 1, algumonsDisponiveis[4]);
     cidadesExistentes[2] = criaCidade(18, 1, algumonsDisponiveis[5]);
@@ -373,7 +424,8 @@ int main()
     {
         printf("\n");
         exibeMapa(mapa, jogador1);
-        jogador1 = leAcao(mapa, jogador1);
+        jogador1 = leAcao(mapa, cidadesExistentes, jogador1);
+        printf("%d", jogador1.numAlgomons);
     }
 
     return 0;
