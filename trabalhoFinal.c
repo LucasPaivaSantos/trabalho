@@ -180,7 +180,7 @@ Jogador moverParaOSul(char mapa[LINHAS][COLUNAS], Jogador jogador)
 {
     int y = jogador.y + 1;
     int x = jogador.x;
-    while (y <= 8 && mapa[y][x] != ' ')
+    while (y < 8 && mapa[y][x] != ' ')
     {
         if (mapa[y][x] == '|')
         {
@@ -242,7 +242,7 @@ Jogador moverParaOLeste(char mapa[LINHAS][COLUNAS], Jogador jogador)
 {
     int y = jogador.y;
     int x = jogador.x + 1;
-    while (x != '\0' && mapa[y][x] != ' ')
+    while (x < 23 && mapa[y][x] != ' ')
     {
         if (mapa[y][x] == '-')
         {
