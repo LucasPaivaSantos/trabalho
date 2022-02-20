@@ -144,19 +144,6 @@ void exibeMapa(char mapa[LINHAS][COLUNAS], Jogador jogador)
     }
 }
 
-void atualizaMapa(char mapa[LINHAS][COLUNAS], Jogador jogador, Cidade cidadesExistentes[])
-{
-    int i, y, x = 0;
-    for (i = 0; i < NUMCIDADES; i++)
-    {
-        if (jogador.y == cidadesExistentes[i].y && jogador.x == cidadesExistentes[i].x)
-        {
-            mapa[jogador.y][jogador.x] = '+';
-        }
-    }
-    exibeMapa(mapa, jogador);
-}
-
 /*int podeMoverPara(char mapa[LINHAS][COLUNAS], int y, int x)
 {
     char permitidos[4 + 1] = "|-+#";
@@ -433,11 +420,10 @@ int main()
         {"      |   |            "},
         {"Y-----#---#-----#-----R"}};
 
-    exibeMapa(mapa, jogador1);
     while (!todosAlgomonsMortos(jogador1) && !possuiTodasAsInsignas(jogador1))
     {
         printf("\n");
-        atualizaMapa(mapa, jogador1, cidadesExistentes);
+        exibeMapa(mapa, jogador1);
         jogador1 = leAcao(mapa, cidadesExistentes, jogador1);
         // printf("%d", jogador1.numAlgomons);
     }
