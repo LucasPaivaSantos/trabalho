@@ -367,10 +367,10 @@ int main()
     algumonsDisponiveis[6] = criaAlgomon("Switcheve", 5, 22, 'C');
     algumonsDisponiveis[7] = criaAlgomon("Doiling", 3, 40, 'R');
     algumonsDisponiveis[8] = criaAlgomon("Stringle", 4, 32, 'D');
-    algumonsDisponiveis[9] = criaAlgomon("Elif", 7, 15, 'C');
+    algumonsDisponiveis[9] = criaAlgomon("Elsif", 7, 15, 'C');
     algumonsDisponiveis[10] = criaAlgomon("Loopoise", 4, 25, 'R');
     algumonsDisponiveis[11] = criaAlgomon("Structurer", 5, 30, 'D');
-    algumonsDisponiveis[12] = criaAlgomon("j", 6, 42, 'C');
+    algumonsDisponiveis[12] = criaAlgomon("Ruby", 6, 42, 'L');
     algumonsDisponiveis[13] = criaAlgomon("k", 3, 30, 'R');
     algumonsDisponiveis[14] = criaAlgomon("l", 3, 28, 'D');
     algumonsDisponiveis[15] = criaAlgomon("m", 2, 38, 'C');
@@ -425,7 +425,7 @@ int main()
         printf("\n");
         exibeMapa(mapa, jogador1);
         jogador1 = leAcao(mapa, cidadesExistentes, jogador1);
-        //printf("%d", jogador1.numAlgomons);
+        // printf("%d", jogador1.numAlgomons);
     }
 
     return 0;
