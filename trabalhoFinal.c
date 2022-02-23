@@ -185,6 +185,7 @@ Jogador moverParaONorte(char mapa[LINHAS][COLUNAS], Cidade cidadesExistentes[], 
         {
             jogador.y = y;
             jogador = capturaAlgomon(jogador, cidade);
+            mapa[y][x] = '+';
             break;
         }
         else if (mapa[y][x] == '+')
@@ -194,8 +195,10 @@ Jogador moverParaONorte(char mapa[LINHAS][COLUNAS], Cidade cidadesExistentes[], 
         }
         else
         {
-            // TODO batalhar e pegar pokemon
             jogador.y = y;
+            // TODO batalhar
+            jogador = capturaAlgomon(jogador, cidade);
+            mapa[y][x] = '+';
             break;
         }
     }
@@ -207,7 +210,7 @@ Jogador moverParaOSul(char mapa[LINHAS][COLUNAS], Cidade cidadesExistentes[], Jo
     int y = jogador.y + 1;
     int x = jogador.x;
     Cidade cidade = localizaCidade(cidadesExistentes, x, y);
-    while (y < 8 && mapa[y][x] != ' ')
+    while (y < LINHAS && mapa[y][x] != ' ')
     {
         if (mapa[y][x] == '|')
         {
@@ -217,6 +220,7 @@ Jogador moverParaOSul(char mapa[LINHAS][COLUNAS], Cidade cidadesExistentes[], Jo
         {
             jogador.y = y;
             jogador = capturaAlgomon(jogador, cidade);
+            mapa[y][x] = '+';
             break;
         }
         else if (mapa[y][x] == '+')
@@ -226,8 +230,10 @@ Jogador moverParaOSul(char mapa[LINHAS][COLUNAS], Cidade cidadesExistentes[], Jo
         }
         else
         {
-            // TODO batalhar e pegar pokemon
             jogador.y = y;
+            // TODO batalhar
+            jogador = capturaAlgomon(jogador, cidade);
+            mapa[y][x] = '+';
             break;
         }
     }
@@ -249,6 +255,7 @@ Jogador moverParaOOeste(char mapa[LINHAS][COLUNAS], Cidade cidadesExistentes[], 
         {
             jogador.x = x;
             jogador = capturaAlgomon(jogador, cidade);
+            mapa[y][x] = '+';
             break;
         }
         else if (mapa[y][x] == '+')
@@ -258,8 +265,10 @@ Jogador moverParaOOeste(char mapa[LINHAS][COLUNAS], Cidade cidadesExistentes[], 
         }
         else
         {
-            // TODO batalhar e pegar pokemon
             jogador.x = x;
+            // TODO batalhar
+            jogador = capturaAlgomon(jogador, cidade);
+            mapa[y][x] = '+';
             break;
         }
     }
@@ -271,7 +280,7 @@ Jogador moverParaOLeste(char mapa[LINHAS][COLUNAS], Cidade cidadesExistentes[], 
     int y = jogador.y;
     int x = jogador.x + 1;
     Cidade cidade = localizaCidade(cidadesExistentes, x, y);
-    while (x < 23 && mapa[y][x] != ' ')
+    while (x < (COLUNAS - 1) && mapa[y][x] != ' ')
     {
         if (mapa[y][x] == '-')
         {
@@ -281,6 +290,7 @@ Jogador moverParaOLeste(char mapa[LINHAS][COLUNAS], Cidade cidadesExistentes[], 
         {
             jogador.x = x;
             jogador = capturaAlgomon(jogador, cidade);
+            mapa[y][x] = '+';
             break;
         }
         else if (mapa[y][x] == '+')
@@ -290,8 +300,10 @@ Jogador moverParaOLeste(char mapa[LINHAS][COLUNAS], Cidade cidadesExistentes[], 
         }
         else
         {
-            // TODO batalhar e pegar pokemon
             jogador.x = x;
+            // TODO batalhar
+            jogador = capturaAlgomon(jogador, cidade);
+            mapa[y][x] = '+';
             break;
         }
     }
@@ -367,21 +379,18 @@ int main()
     algumonsDisponiveis[6] = criaAlgomon("Switcheve", 5, 22, 'C');
     algumonsDisponiveis[7] = criaAlgomon("Doiling", 3, 40, 'R');
     algumonsDisponiveis[8] = criaAlgomon("Stringle", 4, 32, 'D');
-    algumonsDisponiveis[9] = criaAlgomon("Elsif", 7, 15, 'C');
+    algumonsDisponiveis[9] = criaAlgomon("Elsifee", 7, 15, 'C');
     algumonsDisponiveis[10] = criaAlgomon("Loopoise", 4, 25, 'R');
-    algumonsDisponiveis[11] = criaAlgomon("Structurer", 5, 30, 'D');
+    algumonsDisponiveis[11] = criaAlgomon("Structurer", 4, 50, 'D');
     algumonsDisponiveis[12] = criaAlgomon("Ruby", 6, 42, 'L');
-    algumonsDisponiveis[13] = criaAlgomon("k", 3, 30, 'R');
-    algumonsDisponiveis[14] = criaAlgomon("l", 3, 28, 'D');
-    algumonsDisponiveis[15] = criaAlgomon("m", 2, 38, 'C');
-    algumonsDisponiveis[16] = criaAlgomon("n", 6, 26, 'R');
-    algumonsDisponiveis[17] = criaAlgomon("Ceepluplus", 8, 50, 'L');
+    algumonsDisponiveis[13] = criaAlgomon("Javaprie", 5, 30, 'L');
+    algumonsDisponiveis[14] = criaAlgomon("Ceepluplus", 8, 50, 'L');
 
     Treinador treinadoresExistentes[NUMTREINADORES];
-    treinadoresExistentes[0] = criaTreinador('Z', algumonsDisponiveis[17]);
-    treinadoresExistentes[1] = criaTreinador('X', algumonsDisponiveis[16]);
-    treinadoresExistentes[2] = criaTreinador('Y', algumonsDisponiveis[15]);
-    treinadoresExistentes[3] = criaTreinador('R', algumonsDisponiveis[14]);
+    treinadoresExistentes[0] = criaTreinador('Z', algumonsDisponiveis[14]);
+    treinadoresExistentes[1] = criaTreinador('X', algumonsDisponiveis[13]);
+    treinadoresExistentes[2] = criaTreinador('Y', algumonsDisponiveis[12]);
+    treinadoresExistentes[3] = criaTreinador('R', algumonsDisponiveis[11]);
 
     Cidade cidadesExistentes[NUMCIDADES];
     cidadesExistentes[0] = criaCidade(6, 0, algumonsDisponiveis[3]);
@@ -396,10 +405,10 @@ int main()
     cidadesExistentes[9] = criaCidade(6, 7, algumonsDisponiveis[12]);
     cidadesExistentes[10] = criaCidade(10, 7, algumonsDisponiveis[13]);
     cidadesExistentes[11] = criaCidade(16, 7, algumonsDisponiveis[14]);
-    cidadesExistentes[12] = criaCidadeComTreinador(0, 0, algumonsDisponiveis[17], treinadoresExistentes[0]);
-    cidadesExistentes[13] = criaCidadeComTreinador(22, 3, algumonsDisponiveis[16], treinadoresExistentes[1]);
-    cidadesExistentes[14] = criaCidadeComTreinador(0, 7, algumonsDisponiveis[15], treinadoresExistentes[2]);
-    cidadesExistentes[15] = criaCidadeComTreinador(22, 7, algumonsDisponiveis[14], treinadoresExistentes[3]);
+    cidadesExistentes[12] = criaCidadeComTreinador(0, 0, algumonsDisponiveis[14], treinadoresExistentes[0]);
+    cidadesExistentes[13] = criaCidadeComTreinador(22, 3, algumonsDisponiveis[13], treinadoresExistentes[1]);
+    cidadesExistentes[14] = criaCidadeComTreinador(0, 7, algumonsDisponiveis[12], treinadoresExistentes[2]);
+    cidadesExistentes[15] = criaCidadeComTreinador(22, 7, algumonsDisponiveis[11], treinadoresExistentes[3]);
 
     Jogador jogador1;
     jogador1.simbolo = 'A';
