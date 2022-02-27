@@ -1,4 +1,3 @@
-#include <string.h>
 #include <stdio.h>
 #include <string.h>
 #define LINHAS 8
@@ -53,7 +52,7 @@ Algomon criaAlgomon(char nome[], int atk, int vida, char tipo)
 {
     Algomon algomon;
     int i = 0;
-    
+
     strcpy(algomon.nome, nome);
     algomon.atk = atk;
     algomon.vida = vida;
@@ -163,8 +162,10 @@ Cidade localizaCidade(Cidade cidadesExistentes[], int x, int y)
 Algomon primeiroAlgomonVivo(Jogador jogador)
 {
     int i = 0;
-    for (i = 0; i < jogador.numAlgomons; i++) {
-        if (jogador.algodex[i].vida > 0) {
+    for (i = 0; i < jogador.numAlgomons; i++)
+    {
+        if (jogador.algodex[i].vida > 0)
+        {
             return jogador.algodex[i];
         }
     }
@@ -177,33 +178,34 @@ ResultadoBatalha batalhar(char mapa[LINHAS][COLUNAS], Cidade cidadeAnterior, Cid
     int vidaOriginalAlgomonTreinador = cidade.treinador.algomon.vida;
     Algomon algomonJogador = primeiroAlgomonVivo(jogador);
     int vezDoJogador = 1;
-    int round = 1;
+    int turno = 1;
 
     puts("\nInicio da batalha, apresentem seus algomons:");
-            printf("\nTREINADOR -> %s: vida inicial: %d, tipo: %c, ataque: %d", cidade.treinador.algomon.nome, cidade.treinador.algomon.vida, cidade.treinador.algomon.tipo, cidade.treinador.algomon.atk);
-            printf("\nJOGADOR -> %s: vida inicial: %d, tipo: %c, ataque: %d", algomonJogador.nome, algomonJogador.vida, algomonJogador.tipo, algomonJogador.atk);
-            puts("\n\n---------------------");
-            puts("\n---------------------");
-  
+    printf("\nTREINADOR -> %s: vida inicial: %d, tipo: %c, ataque: %d", cidade.treinador.algomon.nome, cidade.treinador.algomon.vida, cidade.treinador.algomon.tipo, cidade.treinador.algomon.atk);
+    printf("\nJOGADOR -> %s: vida inicial: %d, tipo: %c, ataque: %d", algomonJogador.nome, algomonJogador.vida, algomonJogador.tipo, algomonJogador.atk);
+    puts("\n\n---------------------");
+    puts("\n---------------------");
+
     while (1 == 1)
     {
         if (algomonJogador.vida <= 0 || quantidadeAlgomonsMortos == 3)
         {
-            //mover pra cidade anterior
-            //reseta algomon
+            // reseta algomon do treinador
+            jogador.x = cidadeAnterior.x;
+            jogador.y = cidadeAnterior.y;
             puts("\nVoce PERDEU! :(");
-            puts("\nVolte para a cidade anterior.");
+            puts("\nEsta de volta a cidade de onde veio.");
             break;
         }
         else if (cidade.treinador.algomon.vida <= 0)
         {
-            // jogador.insignia
+            jogador.insignias++;
             mapa[cidade.y][cidade.x] = '+';
             jogador = capturaAlgomon(jogador, cidade);
-            printf("\nVoce GANHOU!!! Voce tem agora %d insígnias.", jogador.insignias);
+            printf("\nVoce GANHOU!!! \nVoce tem agora %d insígnias.", jogador.insignias);
             break;
         }
-      
+
         if (vezDoJogador)
         {
             cidade.treinador.algomon.vida -= algomonJogador.atk;
@@ -214,18 +216,18 @@ ResultadoBatalha batalhar(char mapa[LINHAS][COLUNAS], Cidade cidadeAnterior, Cid
             algomonJogador.vida -= cidade.treinador.algomon.atk;
             vezDoJogador = 1;
         }
-      
-        printf("\nround %d: %s atacou %s e inflingiu %d.", round, cidade.treinador.algomon.nome, algomonJogador.nome, cidade.treinador.algomon.atk);
+
+        printf("\nturno %d: %s atacou %s e inflingiu %d.", turno, cidade.treinador.algomon.nome, algomonJogador.nome, cidade.treinador.algomon.atk);
         printf("\nTREINADOR -> vida %s: %d", cidade.treinador.algomon.nome, cidade.treinador.algomon.vida);
         printf("\nJOGADOR -> vida %s: %d", algomonJogador.nome, algomonJogador.vida);
         puts("\n\n---------------------");
-      
-        round++;
+
+        turno++;
     }
 
     resultado.jogador = jogador;
     resultado.cidade = cidade;
-    // resultado.mapa = mapa;
+    // resultado.mapa = mapa[][];
     return resultado;
 }
 
@@ -505,9 +507,10 @@ int main()
         exibeMapa(mapa, jogador1);
         jogador1 = leAcao(mapa, cidadesExistentes, jogador1);
         printf("\n numAlgomons: %d", jogador1.numAlgomons);
-        
-        for (int i = 0; i < jogador1.numAlgomons; i++) {
-          printf("\n jogador1.algodex[%d] -> %s", i, jogador1.algodex[i].nome);
+
+        for (int i = 0; i < jogador1.numAlgomons; i++)
+        {
+            printf("\n jogador1.algodex[%d] -> %s", i, jogador1.algodex[i].nome);
         }
     }
 
