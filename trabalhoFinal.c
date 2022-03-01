@@ -6,6 +6,7 @@
 #define NUMTREINADORES 4
 #define NUMCIDADES 16
 #define TAMALGODEX 15
+#define TAMMENU 3
 
 typedef struct
 {
@@ -48,6 +49,12 @@ typedef struct
     Cidade cidade;
     char mapa[LINHAS][COLUNAS];
 } ResultadoBatalha;
+
+typedef struct
+{
+    Jogador jogador;
+    int indicePrimeiroExibido;
+} ResultadoAcao;
 
 Algomon criaAlgomon(char nome[], int atk, int vida, char tipo)
 {
@@ -202,7 +209,7 @@ ResultadoBatalha batalhar(char mapa[LINHAS][COLUNAS], Cidade cidadeAnterior, Cid
     {
         if (algomonJogador.vida <= 0 && quantidadeAlgomonsMortos == 3)
         {
-            // reseta algomon do treinador
+            cidade.treinador.algomon.vida = vidaOriginalAlgomonTreinador;
             jogador.x = cidadeAnterior.x;
             jogador.y = cidadeAnterior.y;
             puts("\nVoce PERDEU! :(");
@@ -440,15 +447,18 @@ Jogador moverParaOLeste(char mapa[LINHAS][COLUNAS], Cidade cidadesExistentes[], 
     return jogador;
 }
 
-Jogador leAcao(char mapa[LINHAS][COLUNAS], Cidade cidadesExistentes[], Jogador jogador)
+ResultadoAcao leAcao(char mapa[LINHAS][COLUNAS], Cidade cidadesExistentes[], Jogador jogador, int indicePrimeiroExibido)
 {
+    ResultadoAcao resultado;
+    resultado.indicePrimeiroExibido = indicePrimeiroExibido;
+
     int y, x = 0;
 
-    char direcao;
+    char movimento;
     printf("Qual seu movimento (wasdrf)?");
-    scanf("%c", &direcao);
+    scanf("%c", &movimento);
     {
-        switch (direcao)
+        switch (movimento)
         {
         case 'w':
             jogador = moverParaONorte(mapa, cidadesExistentes, jogador);
@@ -466,25 +476,44 @@ Jogador leAcao(char mapa[LINHAS][COLUNAS], Cidade cidadesExistentes[], Jogador j
             jogador = moverParaOLeste(mapa, cidadesExistentes, jogador);
 
             break;
+        case 'r':
+            if (resultado.indicePrimeiroExibido > 0)
+            {
+                resultado.indicePrimeiroExibido--;
+            }
+
+            break;
+        case 'f':
+            if (resultado.indicePrimeiroExibido < jogador.numAlgomons - 3)
+            {
+                resultado.indicePrimeiroExibido++;
+            }
+
+            break;
         default:
             break;
         }
     };
     scanf("%*c");
-    return jogador;
+    resultado.jogador = jogador;
+    return resultado;
 }
 
-void exibeMenu(Jogador jogador)
+void exibeMenu(Jogador jogador, int indicePrimeiroExibido)
 {
-    printf("Algodex (%d/15) Algomons: %d Insignias: %d \n", jogador.numAlgomons, jogador.numAlgomons, jogador.insignias);
-    printf("%s                Atk: %d HP: %d Type: %c\n", jogador.algodex[0].nome, jogador.algodex[0].atk, jogador.algodex[0].vida, jogador.algodex[0].tipo);
-    printf("%s                Atk: %d HP: %d Type: %c\n", jogador.algodex[1].nome, jogador.algodex[1].atk, jogador.algodex[1].vida, jogador.algodex[1].tipo);
-    printf("%s                Atk: %d HP: %d Type: %c\n", jogador.algodex[2].nome, jogador.algodex[2].atk, jogador.algodex[2].vida, jogador.algodex[2].tipo);
+
+    printf("Algodex (%d/%d) Algomons: %d Insignias: %d \n", jogador.numAlgomons, TAMALGODEX, jogador.numAlgomons, jogador.insignias);
+    for (int i = 0; i < TAMMENU; i++)
+    {
+        printf("%s\t\tAtk: %d HP: %d Type: %c\n", jogador.algodex[indicePrimeiroExibido + i].nome, jogador.algodex[indicePrimeiroExibido + i].atk, jogador.algodex[indicePrimeiroExibido + i].vida, jogador.algodex[indicePrimeiroExibido + i].tipo);
+    }
 }
 
 int main()
 {
-    Algomon algomonsDisponiveis[15];
+    int indicePrimeiroExibido = 0;
+
+    Algomon algomonsDisponiveis[TAMALGODEX];
     algomonsDisponiveis[0] = criaAlgomon("Ifssauro", 5, 20, 'C');
     algomonsDisponiveis[1] = criaAlgomon("Whiledle", 3, 40, 'R');
     algomonsDisponiveis[2] = criaAlgomon("Vectoray", 4, 30, 'D');
@@ -550,8 +579,10 @@ int main()
         // system("clear");
         printf("\n");
         exibeMapa(mapa, jogador1);
-        exibeMenu(jogador1);
-        jogador1 = leAcao(mapa, cidadesExistentes, jogador1);
+        exibeMenu(jogador1, indicePrimeiroExibido);
+        ResultadoAcao resultado = leAcao(mapa, cidadesExistentes, jogador1, indicePrimeiroExibido);
+        jogador1 = resultado.jogador;
+        indicePrimeiroExibido = resultado.indicePrimeiroExibido;
         printf("\n numAlgomons: %d", jogador1.numAlgomons);
 
         for (int i = 0; i < jogador1.numAlgomons; i++)
