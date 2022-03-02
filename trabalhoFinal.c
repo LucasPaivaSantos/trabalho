@@ -505,7 +505,7 @@ void exibeMenu(Jogador jogador, int indicePrimeiroExibido)
     printf("Algodex (%d/%d) Algomons: %d Insignias: %d \n", jogador.numAlgomons, TAMALGODEX, jogador.numAlgomons, jogador.insignias);
     for (int i = 0; i < TAMMENU; i++)
     {
-        printf("%s\t\tAtk: %d HP: %d Type: %c\n", jogador.algodex[indicePrimeiroExibido + i].nome, jogador.algodex[indicePrimeiroExibido + i].atk, jogador.algodex[indicePrimeiroExibido + i].vida, jogador.algodex[indicePrimeiroExibido + i].tipo);
+        printf("%-10s                Atk: %d HP: %d Type: %c\n", jogador.algodex[indicePrimeiroExibido + i].nome, jogador.algodex[indicePrimeiroExibido + i].atk, jogador.algodex[indicePrimeiroExibido + i].vida, jogador.algodex[indicePrimeiroExibido + i].tipo);
     }
 }
 
@@ -576,19 +576,12 @@ int main()
 
     while (!todosAlgomonsMortos(jogador1) && !possuiTodasAsInsignas(jogador1))
     {
-        // system("clear");
         printf("\n");
         exibeMapa(mapa, jogador1);
         exibeMenu(jogador1, indicePrimeiroExibido);
         ResultadoAcao resultado = leAcao(mapa, cidadesExistentes, jogador1, indicePrimeiroExibido);
         jogador1 = resultado.jogador;
         indicePrimeiroExibido = resultado.indicePrimeiroExibido;
-        printf("\n numAlgomons: %d", jogador1.numAlgomons);
-
-        for (int i = 0; i < jogador1.numAlgomons; i++)
-        {
-            printf("\n jogador1.algodex[%d] -> %s", i, jogador1.algodex[i].nome);
-        }
     }
 
     return 0;
