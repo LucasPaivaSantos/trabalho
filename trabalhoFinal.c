@@ -192,6 +192,20 @@ int primeiroAlgomonVivo(Jogador jogador)
     }
 }
 
+Jogador rolaMenuParabaixo(Jogador jogador)
+{
+    int indiceFinalDaAlgodex = jogador.numAlgomons - 1;
+    Algomon algomonAux;
+    algomonAux = jogador.algodex[0];
+
+    for (int i = 0; i < indiceFinalDaAlgodex; i++)
+    {
+        jogador.algodex[i] = jogador.algodex[i + 1];
+    }
+    jogador.algodex[indiceFinalDaAlgodex] = jogador.algodex[0];
+    return jogador;
+}
+
 ResultadoBatalha batalhar(char mapa[LINHAS][COLUNAS], Cidade cidadeAnterior, Cidade cidade, Jogador jogador)
 {
     ResultadoBatalha resultado;
@@ -306,10 +320,16 @@ ResultadoBatalha batalhar(char mapa[LINHAS][COLUNAS], Cidade cidadeAnterior, Cid
             else if (algomonJogador.vida <= 0 && quantidadeAlgomonsMortos < 3)
             {
                 printf("\n%s esta muito fraco e volta a sua algobola!", algomonJogador.nome);
-                jogador.algodex[indiceFinalAlgodex] = jogador.algodex[quantidadeAlgomonsMortos];
-                jogador.algodex[quantidadeAlgomonsMortos].vida = 0;
+                int indiceFinalAlgodex = jogador.numAlgomons - 1;
+                Algomon algomonAux = jogador.algodex[0];
+                for (int i = 0; i < indiceFinalAlgodex; i++)
+                {
+                    jogador.algodex[i] = jogador.algodex[i + 1];
+                }
+                jogador.algodex[indiceFinalAlgodex] = algomonAux;
+                jogador.algodex[indiceFinalAlgodex].vida = 0;
+                algomonJogador = jogador.algodex[quantidadeAlgomonsMortos - 1];
                 quantidadeAlgomonsMortos++;
-                algomonJogador = jogador.algodex[quantidadeAlgomonsMortos];
                 printf("\n%s toma seu lugar e a batalha continua!", algomonJogador.nome);
             }
             else if (cidade.treinador.algomon.vida <= 0)
@@ -573,10 +593,10 @@ ResultadoAcao leAcao(char mapa[LINHAS][COLUNAS], Cidade cidadesExistentes[], Jog
 
             break;
         case 'f':
-            if (resultado.indicePrimeiroExibido < jogador.numAlgomons - 3)
-            {
-                resultado.indicePrimeiroExibido++;
-            }
+            // o primeiro algomon vai para o segundo indice
+            // o algomon do ultimo indice (numAlgomons) vai para o primeiro
+            // no inicio do jogo numAlgomons = 3
+            jogador = rolaMenuParabaixo(jogador);
 
             break;
         default:
@@ -588,14 +608,13 @@ ResultadoAcao leAcao(char mapa[LINHAS][COLUNAS], Cidade cidadesExistentes[], Jog
     return resultado;
 }
 
-void exibeMenu(Jogador jogador, int indicePrimeiroExibido)
+void exibeMenu(Jogador jogador)
 {
 
     printf("Algodex (%d/%d) Algomons: %d Insignias: %d \n", jogador.numAlgomons, TAMALGODEX, jogador.numAlgomons, jogador.insignias);
-    for (int i = 0; i < TAMMENU; i++)
-    {
-        printf("%-10s                Atk: %d HP: %d Type: %c\n", jogador.algodex[indicePrimeiroExibido + i].nome, jogador.algodex[indicePrimeiroExibido + i].atk, jogador.algodex[indicePrimeiroExibido + i].vida, jogador.algodex[indicePrimeiroExibido + i].tipo);
-    }
+    printf("%-10s                Atk: %d HP: %d Type: %c\n", jogador.algodex[0].nome, jogador.algodex[0].atk, jogador.algodex[0].vida, jogador.algodex[0].tipo);
+    printf("%-10s                Atk: %d HP: %d Type: %c\n", jogador.algodex[1].nome, jogador.algodex[1].atk, jogador.algodex[1].vida, jogador.algodex[1].tipo);
+    printf("%-10s                Atk: %d HP: %d Type: %c\n", jogador.algodex[2].nome, jogador.algodex[2].atk, jogador.algodex[2].vida, jogador.algodex[2].tipo);
 }
 
 int main()
@@ -667,7 +686,7 @@ int main()
     {
         printf("\n");
         exibeMapa(mapa, jogador1);
-        exibeMenu(jogador1, indicePrimeiroExibido);
+        exibeMenu(jogador1);
         ResultadoAcao resultado = leAcao(mapa, cidadesExistentes, jogador1, indicePrimeiroExibido);
         jogador1 = resultado.jogador;
         indicePrimeiroExibido = resultado.indicePrimeiroExibido;
