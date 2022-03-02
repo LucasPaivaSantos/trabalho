@@ -98,7 +98,7 @@ Jogador capturaAlgomon(Jogador jogador, Cidade cidade)
 {
     if (jogador.numAlgomons < TAMALGODEX)
     {
-        printf("Voce capturou %s!!", cidade.algomon.nome);
+        printf("\nVoce capturou %s!!", cidade.algomon.nome);
         jogador.algodex[jogador.numAlgomons] = cidade.algomon;
         jogador.numAlgomons++;
     }
@@ -199,88 +199,183 @@ ResultadoBatalha batalhar(char mapa[LINHAS][COLUNAS], Cidade cidadeAnterior, Cid
     int vezDoJogador = 1;
     int turno = 1;
 
-    printf("\nInicio da batalha, apresentem seus algomons:");
-    printf("\nTREINADOR -> %s: vida inicial: %d, tipo: %c, ataque: %d", cidade.treinador.algomon.nome, cidade.treinador.algomon.vida, cidade.treinador.algomon.tipo, cidade.treinador.algomon.atk);
-    printf("\nJOGADOR -> %s: vida inicial: %d, tipo: %c, ataque: %d", algomonJogador.nome, algomonJogador.vida, algomonJogador.tipo, algomonJogador.atk);
-    printf("\n\n---------------------");
-    printf("\n---------------------");
-
     while (1 == 1)
     {
-        if (algomonJogador.vida <= 0 && quantidadeAlgomonsMortos == 3)
+        if ((jogador.x == 0) && (jogador.y == 0) && (jogador.insignias >= 3))
         {
-            cidade.treinador.algomon.vida = vidaOriginalAlgomonTreinador;
+            printf("\nInicio da batalha, apresentem seus algomons:");
+            printf("\nTREINADOR -> %s: vida inicial: %d, tipo: %c, ataque: %d", cidade.treinador.algomon.nome, cidade.treinador.algomon.vida, cidade.treinador.algomon.tipo, cidade.treinador.algomon.atk);
+            printf("\nJOGADOR -> %s: vida inicial: %d, tipo: %c, ataque: %d", algomonJogador.nome, algomonJogador.vida, algomonJogador.tipo, algomonJogador.atk);
+            printf("\n\n---------------------");
+            printf("\n---------------------");
+
+            if (algomonJogador.vida <= 0 && quantidadeAlgomonsMortos == 3)
+            {
+                cidade.treinador.algomon.vida = vidaOriginalAlgomonTreinador;
+                jogador.x = cidadeAnterior.x;
+                jogador.y = cidadeAnterior.y;
+                puts("\nVoce foi derrotado!");
+                puts("\nEsta de volta a cidade de onde veio.");
+                break;
+            }
+            else if (algomonJogador.vida <= 0 && quantidadeAlgomonsMortos < 3)
+            {
+                quantidadeAlgomonsMortos++;
+                printf("%s esta muito fraco!\n", algomonJogador.nome);
+                jogador.algodex[indiceAlgomonJogador].vida = 0;
+                algomonJogador = jogador.algodex[primeiroAlgomonVivo(jogador)];
+                printf("%s toma seu lugar e a batalha continua!", algomonJogador.nome);
+            }
+            else if (cidade.treinador.algomon.vida <= 0)
+            {
+                jogador.insignias++;
+                mapa[cidade.y][cidade.x] = '+';
+                jogador = capturaAlgomon(jogador, cidade);
+                printf("\nVoce GANHOU!!! \nVoce tem agora %d insígnias.", jogador.insignias);
+                break;
+            }
+
+            if (vezDoJogador)
+            {
+                if (cidade.treinador.algomon.tipo == 'C' && algomonJogador.tipo == 'R')
+                {
+                    cidade.treinador.algomon.vida -= algomonJogador.atk * 2;
+                    printf("\nturno %d: %s atacou %s e inflingiu %d \n foi super efetivo!.", turno, algomonJogador.nome, cidade.treinador.algomon.nome, 2 * algomonJogador.atk);
+                }
+                else if (cidade.treinador.algomon.tipo == 'R' && algomonJogador.tipo == 'D')
+                {
+                    cidade.treinador.algomon.vida -= algomonJogador.atk * 2;
+                    printf("\nturno %d: %s atacou %s e inflingiu %d \n foi super efetivo!.", turno, algomonJogador.nome, cidade.treinador.algomon.nome, 2 * algomonJogador.atk);
+                }
+                else if (cidade.treinador.algomon.tipo == 'D' && algomonJogador.tipo == 'C')
+                {
+                    cidade.treinador.algomon.vida -= algomonJogador.atk * 2;
+                    printf("\nturno %d: %s atacou %s e inflingiu %d \n foi super efetivo!.", turno, algomonJogador.nome, cidade.treinador.algomon.nome, 2 * algomonJogador.atk);
+                }
+                else
+                {
+                    cidade.treinador.algomon.vida -= algomonJogador.atk;
+                    printf("\nturno %d: %s atacou %s e inflingiu %d.", turno, algomonJogador.nome, cidade.treinador.algomon.nome, algomonJogador.atk);
+                }
+                vezDoJogador = 0;
+            }
+
+            else
+            {
+                if (algomonJogador.tipo == 'C' && cidade.treinador.algomon.tipo == 'R')
+                {
+                    algomonJogador.vida -= cidade.treinador.algomon.atk * 2;
+                    printf("\nturno %d: %s atacou %s e inflingiu %d \n foi super efetivo!.", turno, cidade.treinador.algomon.nome, algomonJogador.nome, 2 * cidade.treinador.algomon.atk);
+                }
+                else if (algomonJogador.tipo == 'R' && cidade.treinador.algomon.tipo == 'D')
+                {
+                    algomonJogador.vida -= cidade.treinador.algomon.atk * 2;
+                    printf("\nturno %d: %s atacou %s e inflingiu %d \n foi super efetivo!.", turno, cidade.treinador.algomon.nome, algomonJogador.nome, 2 * cidade.treinador.algomon.atk);
+                }
+                else if (algomonJogador.tipo == 'D' && cidade.treinador.algomon.tipo == 'C')
+                {
+                    algomonJogador.vida -= cidade.treinador.algomon.atk * 2;
+                    printf("\nturno %d: %s atacou %s e inflingiu %d \n foi super efetivo!.", turno, cidade.treinador.algomon.nome, algomonJogador.nome, 2 * cidade.treinador.algomon.atk);
+                }
+                else
+                {
+                    algomonJogador.vida -= cidade.treinador.algomon.atk;
+                    printf("\nturno %d: %s atacou %s e inflingiu %d.", turno, cidade.treinador.algomon.nome, algomonJogador.nome, cidade.treinador.algomon.atk);
+                }
+                vezDoJogador = 1;
+            }
+        }
+        else if ((jogador.x == 0) && (jogador.y == 0) && (jogador.insignias < 3))
+        {
             jogador.x = cidadeAnterior.x;
             jogador.y = cidadeAnterior.y;
-            puts("\nVoce PERDEU! :(");
-            puts("\nEsta de volta a cidade de onde veio.");
+            printf("\nVoce ainda não esta preparado para essa batalha!");
+            printf("\nEsta de volta a cidade de onde veio.");
             break;
         }
-        else if (algomonJogador.vida <= 0 && quantidadeAlgomonsMortos < 3)
-        {
-            quantidadeAlgomonsMortos++;
-            printf("%s esta muito fraco!\n", algomonJogador.nome);
-            jogador.algodex[indiceAlgomonJogador].vida = 0;
-            algomonJogador = jogador.algodex[primeiroAlgomonVivo(jogador)];
-            printf("%s toma seu lugar e a batalha continua!", algomonJogador.nome);
-        }
-        else if (cidade.treinador.algomon.vida <= 0)
-        {
-            jogador.insignias++;
-            mapa[cidade.y][cidade.x] = '+';
-            jogador = capturaAlgomon(jogador, cidade);
-            printf("\nVoce GANHOU!!! \nVoce tem agora %d insígnias.", jogador.insignias);
-            break;
-        }
-
-        if (vezDoJogador)
-        {
-            if (cidade.treinador.algomon.tipo == 'C' && algomonJogador.tipo == 'R')
-            {
-                cidade.treinador.algomon.vida -= algomonJogador.atk * 2;
-                printf("\nturno %d: %s atacou %s e inflingiu %d \n foi super efetivo!.", turno, algomonJogador.nome, cidade.treinador.algomon.nome, 2 * algomonJogador.atk);
-            }
-            else if (cidade.treinador.algomon.tipo == 'R' && algomonJogador.tipo == 'D')
-            {
-                cidade.treinador.algomon.vida -= algomonJogador.atk * 2;
-                printf("\nturno %d: %s atacou %s e inflingiu %d \n foi super efetivo!.", turno, algomonJogador.nome, cidade.treinador.algomon.nome, 2 * algomonJogador.atk);
-            }
-            else if (cidade.treinador.algomon.tipo == 'D' && algomonJogador.tipo == 'C')
-            {
-                cidade.treinador.algomon.vida -= algomonJogador.atk * 2;
-                printf("\nturno %d: %s atacou %s e inflingiu %d \n foi super efetivo!.", turno, algomonJogador.nome, cidade.treinador.algomon.nome, 2 * algomonJogador.atk);
-            }
-            else
-            {
-                cidade.treinador.algomon.vida -= algomonJogador.atk;
-                printf("\nturno %d: %s atacou %s e inflingiu %d.", turno, algomonJogador.nome, cidade.treinador.algomon.nome, algomonJogador.atk);
-            }
-            vezDoJogador = 0;
-        }
-
         else
         {
-            if (algomonJogador.tipo == 'C' && cidade.treinador.algomon.tipo == 'R')
+            printf("\nInicio da batalha, apresentem seus algomons:");
+            printf("\nTREINADOR -> %s: vida inicial: %d, tipo: %c, ataque: %d", cidade.treinador.algomon.nome, cidade.treinador.algomon.vida, cidade.treinador.algomon.tipo, cidade.treinador.algomon.atk);
+            printf("\nJOGADOR -> %s: vida inicial: %d, tipo: %c, ataque: %d", algomonJogador.nome, algomonJogador.vida, algomonJogador.tipo, algomonJogador.atk);
+            printf("\n\n---------------------");
+            printf("\n---------------------");
+
+            if (algomonJogador.vida <= 0 && quantidadeAlgomonsMortos == 3)
             {
-                algomonJogador.vida -= cidade.treinador.algomon.atk * 2;
-                printf("\nturno %d: %s atacou %s e inflingiu %d \n foi super efetivo!.", turno, cidade.treinador.algomon.nome, algomonJogador.nome, 2 * cidade.treinador.algomon.atk);
+                cidade.treinador.algomon.vida = vidaOriginalAlgomonTreinador;
+                jogador.x = cidadeAnterior.x;
+                jogador.y = cidadeAnterior.y;
+                puts("\nVoce foi derrotado!");
+                puts("\nEsta de volta a cidade de onde veio.");
+                break;
             }
-            else if (algomonJogador.tipo == 'R' && cidade.treinador.algomon.tipo == 'D')
+            else if (algomonJogador.vida <= 0 && quantidadeAlgomonsMortos < 3)
             {
-                algomonJogador.vida -= cidade.treinador.algomon.atk * 2;
-                printf("\nturno %d: %s atacou %s e inflingiu %d \n foi super efetivo!.", turno, cidade.treinador.algomon.nome, algomonJogador.nome, 2 * cidade.treinador.algomon.atk);
+                quantidadeAlgomonsMortos++;
+                printf("%s esta muito fraco!\n", algomonJogador.nome);
+                jogador.algodex[indiceAlgomonJogador].vida = 0;
+                algomonJogador = jogador.algodex[primeiroAlgomonVivo(jogador)];
+                printf("%s toma seu lugar e a batalha continua!", algomonJogador.nome);
             }
-            else if (algomonJogador.tipo == 'D' && cidade.treinador.algomon.tipo == 'C')
+            else if (cidade.treinador.algomon.vida <= 0)
             {
-                algomonJogador.vida -= cidade.treinador.algomon.atk * 2;
-                printf("\nturno %d: %s atacou %s e inflingiu %d \n foi super efetivo!.", turno, cidade.treinador.algomon.nome, algomonJogador.nome, 2 * cidade.treinador.algomon.atk);
+                jogador.insignias++;
+                mapa[cidade.y][cidade.x] = '+';
+                jogador = capturaAlgomon(jogador, cidade);
+                printf("\nVoce GANHOU!!! \nVoce tem agora %d insígnias.", jogador.insignias);
+                break;
             }
+
+            if (vezDoJogador)
+            {
+                if (cidade.treinador.algomon.tipo == 'C' && algomonJogador.tipo == 'R')
+                {
+                    cidade.treinador.algomon.vida -= algomonJogador.atk * 2;
+                    printf("\nturno %d: %s atacou %s e inflingiu %d \n foi super efetivo!.", turno, algomonJogador.nome, cidade.treinador.algomon.nome, 2 * algomonJogador.atk);
+                }
+                else if (cidade.treinador.algomon.tipo == 'R' && algomonJogador.tipo == 'D')
+                {
+                    cidade.treinador.algomon.vida -= algomonJogador.atk * 2;
+                    printf("\nturno %d: %s atacou %s e inflingiu %d \n foi super efetivo!.", turno, algomonJogador.nome, cidade.treinador.algomon.nome, 2 * algomonJogador.atk);
+                }
+                else if (cidade.treinador.algomon.tipo == 'D' && algomonJogador.tipo == 'C')
+                {
+                    cidade.treinador.algomon.vida -= algomonJogador.atk * 2;
+                    printf("\nturno %d: %s atacou %s e inflingiu %d \n foi super efetivo!.", turno, algomonJogador.nome, cidade.treinador.algomon.nome, 2 * algomonJogador.atk);
+                }
+                else
+                {
+                    cidade.treinador.algomon.vida -= algomonJogador.atk;
+                    printf("\nturno %d: %s atacou %s e inflingiu %d.", turno, algomonJogador.nome, cidade.treinador.algomon.nome, algomonJogador.atk);
+                }
+                vezDoJogador = 0;
+            }
+
             else
             {
-                algomonJogador.vida -= cidade.treinador.algomon.atk;
-                printf("\nturno %d: %s atacou %s e inflingiu %d.", turno, cidade.treinador.algomon.nome, algomonJogador.nome, cidade.treinador.algomon.atk);
+                if (algomonJogador.tipo == 'C' && cidade.treinador.algomon.tipo == 'R')
+                {
+                    algomonJogador.vida -= cidade.treinador.algomon.atk * 2;
+                    printf("\nturno %d: %s atacou %s e inflingiu %d \n foi super efetivo!.", turno, cidade.treinador.algomon.nome, algomonJogador.nome, 2 * cidade.treinador.algomon.atk);
+                }
+                else if (algomonJogador.tipo == 'R' && cidade.treinador.algomon.tipo == 'D')
+                {
+                    algomonJogador.vida -= cidade.treinador.algomon.atk * 2;
+                    printf("\nturno %d: %s atacou %s e inflingiu %d \n foi super efetivo!.", turno, cidade.treinador.algomon.nome, algomonJogador.nome, 2 * cidade.treinador.algomon.atk);
+                }
+                else if (algomonJogador.tipo == 'D' && cidade.treinador.algomon.tipo == 'C')
+                {
+                    algomonJogador.vida -= cidade.treinador.algomon.atk * 2;
+                    printf("\nturno %d: %s atacou %s e inflingiu %d \n foi super efetivo!.", turno, cidade.treinador.algomon.nome, algomonJogador.nome, 2 * cidade.treinador.algomon.atk);
+                }
+                else
+                {
+                    algomonJogador.vida -= cidade.treinador.algomon.atk;
+                    printf("\nturno %d: %s atacou %s e inflingiu %d.", turno, cidade.treinador.algomon.nome, algomonJogador.nome, cidade.treinador.algomon.atk);
+                }
+                vezDoJogador = 1;
             }
-            vezDoJogador = 1;
         }
 
         printf("\nTREINADOR -> vida %s: %d", cidade.treinador.algomon.nome, cidade.treinador.algomon.vida);
