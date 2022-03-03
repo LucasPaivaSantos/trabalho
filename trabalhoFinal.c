@@ -109,7 +109,14 @@ int possuiTodasAsInsignas(Jogador jogador)
 {
     if (jogador.insignias == NUMTREINADORES)
     {
-        printf("Parabens! voce conseguiu toda as 4 insignias e capturou cecplusplus");
+        for (int i = 0; i < 20; i++)
+        {
+            printf("\n");
+        }
+
+        printf("\nParabens!!!\nVoce conseguiu toda as 4 insignias e capturou cecplusplus!!\nSegundo a lenda esse algomon sinaliza uma nova etapa...");
+        printf("\nDesenvolvido por Lucas Paiva dos Santos e Italo de Almeida Ribeiro");
+        exit(0);
         return 1;
     }
     else
@@ -120,8 +127,14 @@ int possuiTodasAsInsignas(Jogador jogador)
 
 void fimDeJogo()
 {
-    printf("Todos os seus algomons estao fracos demais para prosseguir\n Fim de jogo!");
-    exit(1);
+    for (int i = 0; i < 20; i++)
+    {
+        printf("\n");
+    }
+
+    printf("Todos os seus algomons estao fracos demais para prosseguir\nTente novamente reorganizando os algomons\nFim de jogo!!");
+    printf("\nDesenvolvido por Lucas Paiva dos Santos e Italo de Almeida Ribeiro");
+    exit(0);
 }
 
 int todosAlgomonsMortos(Jogador jogador)
@@ -192,7 +205,7 @@ int primeiroAlgomonVivo(Jogador jogador)
     }
 }
 
-Jogador rolaMenuParabaixo(Jogador jogador)
+Jogador rolaMenuParaBaixo(Jogador jogador)
 {
     int indiceFinalDaAlgodex = jogador.numAlgomons - 1;
     Algomon algomonAux;
@@ -202,7 +215,21 @@ Jogador rolaMenuParabaixo(Jogador jogador)
     {
         jogador.algodex[i] = jogador.algodex[i + 1];
     }
-    jogador.algodex[indiceFinalDaAlgodex] = jogador.algodex[0];
+    jogador.algodex[indiceFinalDaAlgodex] = algomonAux;
+    return jogador;
+}
+
+Jogador rolaMenuParaCima(Jogador jogador)
+{
+    int indiceFinalDaAlgodex = jogador.numAlgomons - 1;
+    Algomon algomonAux;
+    algomonAux = jogador.algodex[indiceFinalDaAlgodex];
+
+    for (int i = indiceFinalDaAlgodex; i > 0; i--)
+    {
+        jogador.algodex[i] = jogador.algodex[i - 1];
+    }
+    jogador.algodex[0] = algomonAux;
     return jogador;
 }
 
@@ -211,6 +238,7 @@ ResultadoBatalha batalhar(char mapa[LINHAS][COLUNAS], Cidade cidadeAnterior, Cid
     ResultadoBatalha resultado;
     int quantidadeAlgomonsMortos = 0;
     int vidaOriginalAlgomonTreinador = cidade.treinador.algomon.vida;
+    int vidaSobrando = 0;
     int indiceAlgomonJogador = primeiroAlgomonVivo(jogador);
     int indiceFinalAlgodex = jogador.numAlgomons;
     Algomon algomonJogador = jogador.algodex[0];
@@ -220,7 +248,7 @@ ResultadoBatalha batalhar(char mapa[LINHAS][COLUNAS], Cidade cidadeAnterior, Cid
 
     while (1 == 1)
     {
-        if ((jogador.x == 0) && (jogador.y == 0) && (jogador.insignias >= 3))
+        if ((jogador.x == 0) && (jogador.y == 0) && (jogador.insignias == 3)) // caso do treinador Z com as 3 insignias
         {
 
             if (algomonJogador.vida <= 0 && quantidadeAlgomonsMortos == 3)
@@ -233,19 +261,26 @@ ResultadoBatalha batalhar(char mapa[LINHAS][COLUNAS], Cidade cidadeAnterior, Cid
             }
             else if (algomonJogador.vida <= 0 && quantidadeAlgomonsMortos < 3)
             {
-                printf("\n%s esta muito fraco!", algomonJogador.nome);
+                printf("\n%s esta muito fraco e volta a sua algobola!", algomonJogador.nome);
+                int indiceFinalAlgodex = jogador.numAlgomons - 1;
+                Algomon algomonAux = jogador.algodex[0];
+                for (int i = 0; i < indiceFinalAlgodex; i++)
+                {
+                    jogador.algodex[i] = jogador.algodex[i + 1];
+                }
+                jogador.algodex[indiceFinalAlgodex] = algomonAux;
+                jogador.algodex[indiceFinalAlgodex].vida = 0;
+                algomonJogador = jogador.algodex[quantidadeAlgomonsMortos - 1];
                 quantidadeAlgomonsMortos++;
-                jogador.algodex[indiceFinalAlgodex] = jogador.algodex[quantidadeAlgomonsMortos];
-                jogador.algodex[quantidadeAlgomonsMortos].vida = 0;
-                algomonJogador = jogador.algodex[quantidadeAlgomonsMortos];
                 printf("\n%s toma seu lugar e a batalha continua!", algomonJogador.nome);
             }
             else if (cidade.treinador.algomon.vida <= 0)
             {
+                jogador.algodex[0].vida = vidaSobrando;
                 jogador.insignias++;
                 mapa[cidade.y][cidade.x] = '+';
                 jogador = capturaAlgomon(jogador, cidade);
-                printf("\nVoce GANHOU!!! \nVoce tem agora %d insígnias.", jogador.insignias);
+                printf("\nVoce venceu!! \nAgora voce tem %d insígnias.", jogador.insignias);
                 break;
             }
 
@@ -296,10 +331,11 @@ ResultadoBatalha batalhar(char mapa[LINHAS][COLUNAS], Cidade cidadeAnterior, Cid
                     algomonJogador.vida -= cidade.treinador.algomon.atk;
                     printf("\nturno %d: %s atacou %s e inflingiu %d.", turno, cidade.treinador.algomon.nome, algomonJogador.nome, cidade.treinador.algomon.atk);
                 }
+                vidaSobrando = algomonJogador.vida;
                 vezDoJogador = 1;
             }
         }
-        else if ((jogador.x == 0) && (jogador.y == 0) && (jogador.insignias < 3))
+        else if ((jogador.x == 0) && (jogador.y == 0) && (jogador.insignias < 3)) // caso do treinador Z sem as 3 insignias
         {
             jogador.x = cidadeAnterior.x;
             jogador.y = cidadeAnterior.y;
@@ -307,7 +343,7 @@ ResultadoBatalha batalhar(char mapa[LINHAS][COLUNAS], Cidade cidadeAnterior, Cid
             printf("\nEsta de volta a cidade de onde veio.");
             break;
         }
-        else
+        else // caso dos demais treinadores
         {
             if (algomonJogador.vida <= 0 && quantidadeAlgomonsMortos == 3)
             {
@@ -334,10 +370,11 @@ ResultadoBatalha batalhar(char mapa[LINHAS][COLUNAS], Cidade cidadeAnterior, Cid
             }
             else if (cidade.treinador.algomon.vida <= 0)
             {
+                jogador.algodex[0].vida = vidaSobrando;
                 jogador.insignias++;
                 mapa[cidade.y][cidade.x] = '+';
                 jogador = capturaAlgomon(jogador, cidade);
-                printf("\nVoce GANHOU!!! \nVoce tem agora %d insígnias.", jogador.insignias);
+                printf("\nVoce venceu!! \nAgora voce tem %d insígnias.", jogador.insignias);
                 break;
             }
 
@@ -388,6 +425,7 @@ ResultadoBatalha batalhar(char mapa[LINHAS][COLUNAS], Cidade cidadeAnterior, Cid
                     algomonJogador.vida -= cidade.treinador.algomon.atk;
                     printf("\nturno %d: %s atacou %s e inflingiu %d.", turno, cidade.treinador.algomon.nome, algomonJogador.nome, cidade.treinador.algomon.atk);
                 }
+                vidaSobrando = algomonJogador.vida;
                 vezDoJogador = 1;
             }
         }
@@ -435,7 +473,6 @@ Jogador moverParaONorte(char mapa[LINHAS][COLUNAS], Cidade cidadesExistentes[], 
             ResultadoBatalha resultadoBatalha = batalhar(mapa, cidadeAnterior, cidade, jogador);
             jogador = resultadoBatalha.jogador;
             mapa = resultadoBatalha.mapa;
-            // cidade = resultadoBatalha.cidade;
             break;
         }
     }
@@ -473,7 +510,6 @@ Jogador moverParaOSul(char mapa[LINHAS][COLUNAS], Cidade cidadesExistentes[], Jo
             ResultadoBatalha resultadoBatalha = batalhar(mapa, cidadeAnterior, cidade, jogador);
             jogador = resultadoBatalha.jogador;
             mapa = resultadoBatalha.mapa;
-            // cidade = resultadoBatalha.cidade;
             break;
         }
     }
@@ -511,7 +547,6 @@ Jogador moverParaOOeste(char mapa[LINHAS][COLUNAS], Cidade cidadesExistentes[], 
             ResultadoBatalha resultadoBatalha = batalhar(mapa, cidadeAnterior, cidade, jogador);
             jogador = resultadoBatalha.jogador;
             mapa = resultadoBatalha.mapa;
-            // cidade = resultadoBatalha.cidade;
             break;
         }
     }
@@ -549,7 +584,6 @@ Jogador moverParaOLeste(char mapa[LINHAS][COLUNAS], Cidade cidadesExistentes[], 
             ResultadoBatalha resultadoBatalha = batalhar(mapa, cidadeAnterior, cidade, jogador);
             jogador = resultadoBatalha.jogador;
             mapa = resultadoBatalha.mapa;
-            // cidade = resultadoBatalha.cidade;
             break;
         }
     }
@@ -586,17 +620,11 @@ ResultadoAcao leAcao(char mapa[LINHAS][COLUNAS], Cidade cidadesExistentes[], Jog
 
             break;
         case 'r':
-            if (resultado.indicePrimeiroExibido > 0)
-            {
-                resultado.indicePrimeiroExibido--;
-            }
+            jogador = rolaMenuParaCima(jogador);
 
             break;
         case 'f':
-            // o primeiro algomon vai para o segundo indice
-            // o algomon do ultimo indice (numAlgomons) vai para o primeiro
-            // no inicio do jogo numAlgomons = 3
-            jogador = rolaMenuParabaixo(jogador);
+            jogador = rolaMenuParaBaixo(jogador);
 
             break;
         default:
@@ -615,6 +643,7 @@ void exibeMenu(Jogador jogador)
     printf("%-10s                Atk: %d HP: %d Type: %c\n", jogador.algodex[0].nome, jogador.algodex[0].atk, jogador.algodex[0].vida, jogador.algodex[0].tipo);
     printf("%-10s                Atk: %d HP: %d Type: %c\n", jogador.algodex[1].nome, jogador.algodex[1].atk, jogador.algodex[1].vida, jogador.algodex[1].tipo);
     printf("%-10s                Atk: %d HP: %d Type: %c\n", jogador.algodex[2].nome, jogador.algodex[2].atk, jogador.algodex[2].vida, jogador.algodex[2].tipo);
+    printf("Autoria: Lucas Paiva dos Santos e Italo de Almeida Ribeiro");
 }
 
 int main()
