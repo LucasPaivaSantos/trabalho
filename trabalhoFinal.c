@@ -6,7 +6,6 @@
 #define NUMTREINADORES 4
 #define NUMCIDADES 16
 #define TAMALGODEX 18
-#define TAMMENU 3
 
 typedef struct
 {
@@ -639,8 +638,6 @@ void exibeMenu(Jogador jogador)
 
 int main()
 {
-    int indicePrimeiroExibido = 0;
-
     Algomon algomonsDisponiveis[TAMALGODEX];
     algomonsDisponiveis[0] = criaAlgomon("Ifssauro", 5, 20, 'C');
     algomonsDisponiveis[1] = criaAlgomon("Whiledle", 3, 40, 'R');
